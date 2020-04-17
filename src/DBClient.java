@@ -18,6 +18,7 @@ public class DBClient
         }
     }
 
+
     private static void handleNextCommand(BufferedReader commandLine, BufferedWriter out, BufferedReader in)
     {
         try {
@@ -34,4 +35,5 @@ public class DBClient
             System.out.println(ioe);
         }
     }
+
 }
