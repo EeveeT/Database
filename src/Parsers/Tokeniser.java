@@ -60,13 +60,25 @@ public class Tokeniser
                 else { addToken(GREATER_THAN);}
                 break;
 
+            case '!':
+                if(matches('=')) { addToken(NOT_EQUAL_TO); }
+                break;
+
+            // Ignores whitespaces
+            case ' ':
+            case '\r':
+            case '\t':
+            case '\n':
+                break;
+
+
+
             default:
                 throw new UnexpectedCharacterException();
 
         }
     }
 
-// todo: <Operator>       ::=   ==   |   >   |   <   |   >=   |   <=   |   !=   |   LIKE
 
     private char nextChar() {
         current += 1;
@@ -86,18 +98,22 @@ public class Tokeniser
 
     // This method advances the input if the next char matches `nextChar`.
     // Returns true if the chars matched.
-    private boolean matches(char nextChar){
-        //
-        if(isAtEnd()){
-            return false;
-        }
-        if(source.charAt(current) != nextChar){
-            return false;
-        }
-        else{
-            current += 1;
+    private boolean matches(char nextChar)
+    {
+        if(lookAhead() == nextChar){
+            nextChar();
             return true;
         }
+
+        return false;
+    }
+
+    private char lookAhead(){
+        if (isAtEnd()){
+            return '\0';
+        }
+        return source.charAt(current);
     }
 }
+
 
