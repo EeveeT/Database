@@ -3,6 +3,8 @@ package Parsers;
 import java.util.ArrayList;
 import java.util.List;
 import static Parsers.TokenType.*;
+import static java.lang.Character.isDigit;
+
 
 
 public class Tokeniser
@@ -72,10 +74,13 @@ public class Tokeniser
                 break;
 
 
-
             default:
-                throw new UnexpectedCharacterException();
-
+                if(isDigit(ch)){
+                    scanNumber();
+                }
+                else {
+                    throw new UnexpectedCharacterException();
+                }
         }
     }
 
@@ -114,6 +119,20 @@ public class Tokeniser
         }
         return source.charAt(current);
     }
+
+    private void scanNumber(){
+
+        while(isDigit(lookAhead())){
+            nextChar();
+        }
+        if(matches('.')){
+            while (isDigit(lookAhead())){
+                nextChar();
+            }
+        }
+        addToken(NUMBER);
+    }
+
 }
 
 
