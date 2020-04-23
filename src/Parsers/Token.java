@@ -2,8 +2,8 @@ package Parsers;
 
 public class Token
 {
-    public TokenType type;
-    public String string;
+    public final TokenType type;
+    public final String string;
 
     public Token(TokenType type, String string)
     {

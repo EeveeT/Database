@@ -1,3 +1,5 @@
+package Query;
+
 public class Condition{
     public Condition(String attributeName, Operator operator, Value value) {
         this.attributeName = attributeName;
@@ -5,7 +7,7 @@ public class Condition{
         this.value = value;
     }
 
-    enum Operator{ Equals, GT, LT ,GTE, LTE, NEquals, Like}
+    public enum Operator{ Equals, GT, LT ,GTE, LTE, NEquals, Like}
 
     public String attributeName;
     public Operator operator;

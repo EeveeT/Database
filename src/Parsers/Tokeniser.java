@@ -41,6 +41,7 @@ public class Tokeniser
         keywords.put("FALSE", FALSE);
         keywords.put("AND ", AND);
         keywords.put("OR", OR);
+        keywords.put("LIKE", LIKE);
     }
 
     private final String source;
@@ -171,9 +172,13 @@ public class Tokeniser
         if(matches('.')){
             while (isDigit(lookAhead())){
                 nextChar();
+
             }
+            addToken(FLOAT);
         }
-        addToken(NUMBER);
+        else {
+            addToken(INT);
+        }
     }
 
     private void scanString() throws UnexpectedCharacterException {
