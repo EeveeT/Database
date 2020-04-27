@@ -5,6 +5,8 @@ import Query.Value;
 
 import javax.management.ValueExp;
 import java.util.List;
+
+import static Parsers.TokenType.*;
 import static java.lang.Float.parseFloat;
 import static java.lang.Integer.parseInt;
 
@@ -54,12 +56,39 @@ public class Parser
     }
 
     private Condition parseCondition() throws UnexpectedTokenException {
-        String variable = parseVariable();
-        Condition.Operator operator = parseOperator();
-        Value value = parseValue();
 
-        return new Condition(variable, operator, value);
-        //todo: AND & OR conditions
+        if(matches(TokenType.BRACKET_LEFT)){
+            Condition leftCondition = parseCondition();
+
+            expect(TokenType.BRACKET_RIGHT);
+
+            Condition.Junction junction;
+
+            if(matches(AND)){
+                junction = Condition.Junction.AND;
+            }
+            else if(matches(OR)){
+                junction = Condition.Junction.OR;
+            }
+            else{
+                throw new UnexpectedTokenException(nextToken());
+            }
+
+            expect(TokenType.BRACKET_LEFT);
+            Condition rightCondition = parseCondition();
+            expect(TokenType.BRACKET_RIGHT);
+
+            return new Condition.Composite(leftCondition, junction, rightCondition);
+
+        }
+
+        else{
+
+            String variable = parseVariable();
+            Condition.Operator operator = parseOperator();
+            Value value = parseValue();
+            return new Condition.Single(variable, operator, value);
+        }
 
     }
 
@@ -100,12 +129,40 @@ public class Parser
     }
 
 
-
-
     private Token nextToken(){
         Token token = tokens.get(current);
         current += 1;
         return token;
+    }
+
+    private void expect(TokenType type) throws UnexpectedTokenException {
+
+        if(!matches(type)) {
+
+            throw new UnexpectedTokenException(nextToken());
+        }
+    }
+
+    private boolean matches(TokenType nextType){
+
+        if(lookAhead().type == nextType ){
+            nextToken();
+            return true;
+        }
+        return false;
+    }
+
+    private Token lookAhead(){
+        if(isAtEnd()){
+            return null;
+        }
+        return tokens.get(current);
+
+    }
+
+    private boolean isAtEnd()
+    {
+        return current >= tokens.size();
     }
 
 //todo: <Condition>      ::=  ( <Condition> ) AND ( <Condition> )  |

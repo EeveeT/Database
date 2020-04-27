@@ -103,6 +103,9 @@ public class Tokeniser
                 scanString();
                 break;
 
+            case '*':
+                addToken(ASTERISK);
+                break;
 
 
             // Ignores whitespaces
@@ -203,7 +206,6 @@ public class Tokeniser
         addToken(keywords.getOrDefault(text, VARIABLE));
 
     }
-
 
 }
 
