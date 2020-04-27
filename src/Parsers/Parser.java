@@ -1,10 +1,15 @@
 package Parsers;
 
 import Query.Condition;
+import Query.Insert;
+import Query.Select;
 import Query.Value;
 
-import javax.management.ValueExp;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 
 import static Parsers.TokenType.*;
 import static java.lang.Float.parseFloat;
@@ -20,6 +25,43 @@ public class Parser
     public Parser(List<Token> tokens) {
         this.tokens = tokens;
         this.current = 0;
+
+    }
+
+    private Insert parseInsert() throws UnexpectedTokenException{
+
+        expect(INSERT);
+        expect(INTO);
+        String tableName = parseVariable();
+        expect(VALUES);
+        expect(BRACKET_LEFT);
+        List<Value> valueList = parseListOf(this::parseValue);
+        expect(BRACKET_RIGHT);
+
+        return new Insert(tableName, valueList);
+    }
+
+
+    private Select parseSelect() throws UnexpectedTokenException {
+
+        expect(SELECT);
+        Optional<List<String>> attribList;
+        if(matches(ASTERISK)){
+            attribList = Optional.empty();
+        }
+        else{
+            attribList = Optional.of(parseListOf(this::parseVariable));
+
+        }
+        expect(FROM);
+        String tableName = parseVariable();
+        Optional<Condition> condition = Optional.empty();
+        if(matches(WHERE)){
+            condition = Optional.of(parseCondition());
+        }
+
+        return new Select(attribList, tableName, condition );
+
 
     }
 
@@ -127,7 +169,19 @@ public class Parser
                 throw new UnexpectedTokenException(token);
         }
     }
+    // This method
+    private <T> List<T> parseListOf(ParserInterface<T> parseItem) throws UnexpectedTokenException {
 
+        List<T> list = new ArrayList<>();
+
+        list.add(parseItem.parse());
+
+        while(matches(COMMA)){
+            list.add(parseItem.parse());
+        }
+
+        return list;
+    }
 
     private Token nextToken(){
         Token token = tokens.get(current);
@@ -165,7 +219,5 @@ public class Parser
         return current >= tokens.size();
     }
 
-//todo: <Condition>      ::=  ( <Condition> ) AND ( <Condition> )  |
-//                      ( <Condition> ) OR ( <Condition> )   |
-//                      <AttributeName> <Operator> <Value>
+
 }

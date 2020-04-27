@@ -1,11 +1,28 @@
 package Query;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class Select
 {
-    public ArrayList<String> AttribList;
+    public Select(Optional<List<String>> attribList, String tableName, Optional<Condition> condition) {
+        this.attribList = attribList;
+        this.tableName = tableName;
+        this.condition = condition;
+    }
+
+    public Optional<List<String>> attribList;
     public String tableName;
-    public Condition condition;
+    public Optional<Condition> condition;
+
+
 
 }
+
+
+
+
+
+
+//<Select>         ::=  -SELECT- (<AttributeList> | * ) FROM <TableName> (WHERE <Condition>)?
+//<WildAttribList> ::=  <AttributeList> | *

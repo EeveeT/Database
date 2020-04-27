@@ -33,7 +33,4 @@ public abstract class Value{
         }
     }
 
-    // todo:
-    //  - add StringLiteral, BooleanLit and FloatLit
-    // float and int's seperate?
 }
