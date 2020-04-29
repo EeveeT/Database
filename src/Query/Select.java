@@ -3,7 +3,7 @@ package Query;
 import java.util.List;
 import java.util.Optional;
 
-public class Select
+public class Select implements Command
 {
     public Select(Optional<List<String>> attribList, String tableName, Optional<Condition> condition) {
         this.attribList = attribList;

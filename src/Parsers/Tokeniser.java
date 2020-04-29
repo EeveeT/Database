@@ -24,6 +24,7 @@ public class Tokeniser
         keywords.put("USE", USE);
         keywords.put("CREATE", CREATE);
         keywords.put("DROP", DROP);
+        keywords.put("ADD", ADD);
         keywords.put("ALTER", ALTER);
         keywords.put("INSERT", INSERT);
         keywords.put("UPDATE", UPDATE);
@@ -42,6 +43,7 @@ public class Tokeniser
         keywords.put("AND ", AND);
         keywords.put("OR", OR);
         keywords.put("LIKE", LIKE);
+
     }
 
     private final String source;
@@ -56,7 +58,7 @@ public class Tokeniser
         this.current = 0;
     }
 
-    List<Token> tokenise() throws UnexpectedCharacterException {
+    public List<Token> tokenise() throws UnexpectedCharacterException {
         while(!isAtEnd()){
             start = current;
             scanToken();
@@ -81,7 +83,8 @@ public class Tokeniser
                 break;
 
             case '=':
-                if (matches('=')) { addToken(EQUALS); }
+                if (matches('=')) { addToken(DOUBLE_EQUALS); }
+                else{ addToken(EQUALS); }
                 break;
 
             case '<':

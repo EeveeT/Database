@@ -1,12 +1,10 @@
 package Parsers;
 
-import Query.Condition;
-import Query.Insert;
-import Query.Select;
-import Query.Value;
+import Query.*;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +24,136 @@ public class Parser
         this.tokens = tokens;
         this.current = 0;
 
+    }
+
+    //private static final List<ParserInterface<Command>> commands;
+
+
+    public Command parseCommand() throws UnexpectedTokenException{
+
+
+        List<ParserInterface<Command>> commandParsers = Arrays.asList(
+                this::parseUse,
+              //this::parseCreate,
+                this::parseDrop,
+                this::parseAlter,
+                this::parseInsert,
+                this::parseSelect,
+                this::parseUpdate,
+                this::parseDelete,
+                this::parseJoin
+        );
+        for(ParserInterface<Command> commandParser: commandParsers){
+
+            try {
+                return commandParser.parse();
+            }
+            catch (UnexpectedTokenException e){
+                reset();
+            }
+
+        }
+        throw new UnexpectedTokenException(nextToken());
+
+    }
+
+    private Use parseUse() throws UnexpectedTokenException{
+
+        expect(USE);
+        String databaseName = parseVariable();
+
+        return new Use(databaseName);
+
+    }
+
+    private Update.NameValue parseNameValue() throws UnexpectedTokenException{
+
+        String attribName = parseVariable();
+        expect(EQUALS);
+        Value value = parseValue();
+
+        return new Update.NameValue(attribName, value);
+
+
+    }
+
+    private Update parseUpdate() throws UnexpectedTokenException{
+
+        expect(UPDATE);
+        String tableName = parseVariable();
+        expect(SET);
+
+        List<Update.NameValue> nameValue = parseListOf(this::parseNameValue);
+
+        expect(WHERE);
+
+        Condition condition = parseCondition();
+
+        return new Update(tableName, nameValue, condition);
+    }
+
+    private Drop parseDrop() throws UnexpectedTokenException{
+
+        expect(DROP);
+
+        Drop.Structure structure;
+        if(matches(DATABASE)){
+            structure = Drop.Structure.DATABASE;
+        }
+        else{
+            expect(TABLE);
+            structure = Drop.Structure.TABLE;
+        }
+
+        String structName = parseVariable();
+
+        return new Drop(structure, structName);
+    }
+
+    private Alter parseAlter() throws UnexpectedTokenException{
+
+        expect(ALTER);
+        expect(TABLE);
+        String tableName = parseVariable();
+
+        Alter.Action altType;
+        if(matches(ADD)){
+            altType = Alter.Action.ADD;
+        }
+        else{
+            expect(DROP);
+            altType = Alter.Action.DROP;
+        }
+
+        String attribName = parseVariable();
+
+        return new Alter(tableName, altType, attribName);
+    }
+
+    private Join parseJoin() throws UnexpectedTokenException{
+
+        expect(JOIN);
+        String tableNameA = parseVariable();
+        expect(AND);
+        String tableNameB = parseVariable();
+        expect(ON);
+        String attribNameA = parseVariable();
+        expect(AND);
+        String attribNameB = parseVariable();
+
+        return new Join(tableNameA, tableNameB, attribNameA, attribNameB);
+    }
+
+
+    private Delete parseDelete() throws UnexpectedTokenException {
+
+        expect(DELETE);
+        expect(FROM);
+        String tableName = parseVariable();
+        expect(WHERE);
+        Condition condition = parseCondition();
+
+        return new Delete(tableName, condition);
     }
 
     private Insert parseInsert() throws UnexpectedTokenException{
@@ -69,7 +197,7 @@ public class Parser
         Token token = nextToken();
 
         switch(token.type){
-            case EQUALS:
+            case DOUBLE_EQUALS:
                 return Condition.Operator.Equals;
 
             case GREATER_THAN:
@@ -109,11 +237,9 @@ public class Parser
             if(matches(AND)){
                 junction = Condition.Junction.AND;
             }
-            else if(matches(OR)){
-                junction = Condition.Junction.OR;
-            }
             else{
-                throw new UnexpectedTokenException(nextToken());
+                expect(OR);
+                junction = Condition.Junction.OR;
             }
 
             expect(TokenType.BRACKET_LEFT);
@@ -169,7 +295,7 @@ public class Parser
                 throw new UnexpectedTokenException(token);
         }
     }
-    // This method
+    //todo: comment
     private <T> List<T> parseListOf(ParserInterface<T> parseItem) throws UnexpectedTokenException {
 
         List<T> list = new ArrayList<>();
@@ -182,6 +308,7 @@ public class Parser
 
         return list;
     }
+
 
     private Token nextToken(){
         Token token = tokens.get(current);
@@ -199,7 +326,9 @@ public class Parser
 
     private boolean matches(TokenType nextType){
 
-        if(lookAhead().type == nextType ){
+        Token lookAhead = lookAhead();
+
+        if(lookAhead != null && lookAhead.type == nextType ){
             nextToken();
             return true;
         }
@@ -219,5 +348,9 @@ public class Parser
         return current >= tokens.size();
     }
 
+    private void reset(){
+
+        current = 0;
+    }
 
 }

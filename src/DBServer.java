@@ -1,6 +1,10 @@
+import Parsers.*;
+import Query.Command;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class DBServer
 {
@@ -23,7 +27,14 @@ public class DBServer
             Socket socket = ss.accept();
             BufferedReader in = new BufferedReader((new InputStreamReader(socket.getInputStream())));
             BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            processNextCommand(in, out);
+
+            try {
+                while (true) {
+                    processNextCommand(in, out);
+                }
+            }
+            catch(Exception e){ System.err.println(e);}
+
             out.close();
             in.close();
             socket.close();
@@ -36,10 +47,21 @@ public class DBServer
 
     private void processNextCommand(BufferedReader in, BufferedWriter out) throws IOException {
         String line = in.readLine();
-        out.write(line);
-        out.write('\n');
-        out.write(EOT);
-        out.write('\n');
+        try {
+            List<Token> tokens = new Tokeniser(line).tokenise();
+            System.out.println(tokens);
+            Command command = new Parser(tokens).parseCommand();
+            out.write("Input successfully parsed \n");
+
+        } catch (UnexpectedCharacterException | UnexpectedTokenException ue) {
+            out.write("Unexpected Exception Error \n");
+//todo: change this bit
+            System.out.println(ue.toString());
+            out.write('\n');
+        } finally {
+            out.write("\n" + EOT + "\n");
+            out.flush();
+        }
     }
 
     public static void main(String[] args){

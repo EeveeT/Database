@@ -28,7 +28,6 @@ public abstract class Condition{
             this.junction = junction;
         }
 
-
     }
 
     public enum Operator{ Equals, GT, LT ,GTE, LTE, NEquals, Like}
