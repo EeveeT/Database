@@ -13,6 +13,7 @@ public enum TokenType
     INTO, VALUES, FROM, SET, WHERE, ON,
     TRUE, FALSE,
     AND, OR,
+    // Variables are non-keywords such as TableName or DatabaseName.
     VARIABLE
 
 }

@@ -2,9 +2,5 @@ package Parsers;
 
 public class UnexpectedCharacterException extends Throwable
 {
-
-    public UnexpectedCharacterException()
-    {
-
-    }
+    public UnexpectedCharacterException(){}
 }

@@ -2,13 +2,10 @@ package Parsers;
 
 import Query.*;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.jar.Attributes;
-
 
 import static Parsers.TokenType.*;
 import static java.lang.Float.parseFloat;
@@ -30,7 +27,7 @@ public class Parser
     //private static final List<ParserInterface<Command>> commands;
 
 
-    public Command parseCommand() throws UnexpectedTokenException{
+    public Command parseCommand() throws UnexpectedTokenException {
 
 
         List<ParserInterface<Command>> commandParsers = Arrays.asList(
@@ -45,7 +42,7 @@ public class Parser
                 this::parseDelete,
                 this::parseJoin
         );
-        for(ParserInterface<Command> commandParser: commandParsers){
+        for(ParserInterface<Command> commandParser: commandParsers) {
 
             try {
                 Command command = commandParser.parse();
@@ -61,7 +58,7 @@ public class Parser
 
     }
 
-    private CreateTable parseCreateTable() throws UnexpectedTokenException{
+    private CreateTable parseCreateTable() throws UnexpectedTokenException {
 
         expect(CREATE);
         expect(TABLE);
@@ -79,7 +76,7 @@ public class Parser
 
     }
 
-    private CreateDatabase parseCreateDatabase() throws UnexpectedTokenException{
+    private CreateDatabase parseCreateDatabase() throws UnexpectedTokenException {
 
         expect(CREATE);
         expect(DATABASE);
@@ -88,7 +85,7 @@ public class Parser
         return new CreateDatabase(databaseName);
     }
 
-    private Use parseUse() throws UnexpectedTokenException{
+    private Use parseUse() throws UnexpectedTokenException {
 
         expect(USE);
         String databaseName = parseVariable();
@@ -97,7 +94,7 @@ public class Parser
 
     }
 
-    private Update.NameValue parseNameValue() throws UnexpectedTokenException{
+    private Update.NameValue parseNameValue() throws UnexpectedTokenException {
 
         String attribName = parseVariable();
         expect(EQUALS);
@@ -108,7 +105,7 @@ public class Parser
 
     }
 
-    private Update parseUpdate() throws UnexpectedTokenException{
+    private Update parseUpdate() throws UnexpectedTokenException {
 
         expect(UPDATE);
         String tableName = parseVariable();
@@ -123,7 +120,7 @@ public class Parser
         return new Update(tableName, nameValue, condition);
     }
 
-    private Drop parseDrop() throws UnexpectedTokenException{
+    private Drop parseDrop() throws UnexpectedTokenException {
 
         expect(DROP);
 
@@ -141,7 +138,7 @@ public class Parser
         return new Drop(structure, structName);
     }
 
-    private Alter parseAlter() throws UnexpectedTokenException{
+    private Alter parseAlter() throws UnexpectedTokenException {
 
         expect(ALTER);
         expect(TABLE);
@@ -161,7 +158,7 @@ public class Parser
         return new Alter(tableName, altType, attribName);
     }
 
-    private Join parseJoin() throws UnexpectedTokenException{
+    private Join parseJoin() throws UnexpectedTokenException {
 
         expect(JOIN);
         String tableNameA = parseVariable();
@@ -187,7 +184,7 @@ public class Parser
         return new Delete(tableName, condition);
     }
 
-    private Insert parseInsert() throws UnexpectedTokenException{
+    private Insert parseInsert() throws UnexpectedTokenException {
 
         expect(INSERT);
         expect(INTO);
@@ -372,7 +369,7 @@ public class Parser
         return false;
     }
 
-    private Token lookAhead(){
+    private Token lookAhead() {
         if(isAtEnd()){
             return null;
         }
@@ -380,12 +377,11 @@ public class Parser
 
     }
 
-    private boolean isAtEnd()
-    {
+    private boolean isAtEnd() {
         return current >= tokens.size();
     }
 
-    private void reset(){
+    private void reset() {
 
         current = 0;
     }

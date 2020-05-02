@@ -8,9 +8,4 @@ public class Delete implements Command {
         this.tableName = tableName;
         this.condition = condition;
     }
-
-
-
 }
-
-//<Delete>         ::=  DELETE FROM <TableName> WHERE <Condition>

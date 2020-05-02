@@ -2,7 +2,7 @@ package Query;
 
 import java.util.List;
 
-public class Update implements Command{
+public class Update implements Command {
 
     public String tableName;
     public List<NameValue> nameValue;
@@ -14,7 +14,7 @@ public class Update implements Command{
         this.condition = condition;
     }
 
-    static public class NameValue{
+    static public class NameValue {
 
         public String name;
         public Value value;
@@ -24,15 +24,5 @@ public class Update implements Command{
             this.value = value;
         }
     }
-
-
-    // data Condition = Single String Operator Value
-    //                | Composite Condition Condition Junction
 }
 
-
-
-
-//<Update>         ::=  UPDATE <TableName> SET <NameValueList> WHERE <Condition>
-//<NameValueList>  ::=  <NameValuePair> |  <NameValuePair> , <NameValueList>
-//<NameValuePair>  ::=  <AttributeName> = <Value>

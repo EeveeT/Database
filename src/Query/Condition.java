@@ -1,8 +1,12 @@
 package Query;
 
-public abstract class Condition{
+public abstract class Condition {
 
-    static public class Single extends Condition{
+    public enum Operator{ Equals, GT, LT ,GTE, LTE, NEquals, Like }
+
+    public enum Junction{ AND, OR }
+
+    static public class Single extends Condition {
 
         public final String attributeName;
         public final Operator operator;
@@ -13,10 +17,9 @@ public abstract class Condition{
             this.operator = operator;
             this.value = value;
         }
-
     }
 
-    static public class Composite extends Condition{
+    static public class Composite extends Condition {
 
         public final Condition left;
         public final Condition right;
@@ -27,12 +30,5 @@ public abstract class Condition{
             this.right = right;
             this.junction = junction;
         }
-
     }
-
-    public enum Operator{ Equals, GT, LT ,GTE, LTE, NEquals, Like}
-    public enum Junction{ AND, OR}
-
-
-
 }

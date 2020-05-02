@@ -21,5 +21,3 @@ public class Alter implements Command {
 
 
 
-//<Alter>            ::=  ALTER TABLE <TableName> <AlterationType> <AttributeName>
-//<AlterationType>   ::=  ADD | DROP

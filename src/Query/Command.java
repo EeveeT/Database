@@ -7,7 +7,3 @@ public interface Command {
 }
 
 
-//<Command>        ::=  <CommandType>;
-//
-//<CommandType>    ::=  <Use> | <Create> | <Drop> | <Alter> | <Insert> |
-//                      <Select> | <Update> | <Delete> | <Join>

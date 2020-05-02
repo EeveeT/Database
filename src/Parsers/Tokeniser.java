@@ -6,19 +6,21 @@ import java.util.List;
 import java.util.Map;
 
 import static Parsers.TokenType.*;
-import static java.lang.Character.isDigit;
-import static java.lang.Character.isLetterOrDigit;
-import static java.lang.Character.isLetter;
+import static java.lang.Character.*;
 
+// This class converts a String into a List of Tokens.
+//
+// #Example Usage
+//
+// > List<Token> tokens = new Tokeniser("SELECT * FROM table")
+// >                      .tokenise();
+//
+public class Tokeniser {
 
-
-public class Tokeniser
-{
-    // A specific type or parser
-
+    // List of the keywords with their associated TokenTypes.
     private static final Map<String, TokenType> keywords;
 
-    static{
+    static {
         keywords = new HashMap<>();
         keywords.put("SELECT", SELECT);
         keywords.put("USE", USE);
@@ -46,11 +48,15 @@ public class Tokeniser
 
     }
 
+
     private final String source;
     private final List<Token> tokens;
+    // Indices in the source string
     private int start;
     private int current;
 
+
+    // The constructor accepts the string to be tokenised.
     public Tokeniser(String source) {
         this.source = source;
         this.tokens = new ArrayList<>();
@@ -58,18 +64,23 @@ public class Tokeniser
         this.current = 0;
     }
 
+    // Tokenises the string given in the constructor.
+    // An exception is thrown if a character does not from a valid token.
+    // Method keeps going until the string is completely consumed.
     public List<Token> tokenise() throws UnexpectedCharacterException {
-        while(!isAtEnd()){
+        while (!isAtEnd()) {
             start = current;
             scanToken();
         }
         return tokens;
     }
 
+    // Advances the input and pushes the encountered token onto `tokens`.
     private void scanToken() throws UnexpectedCharacterException {
         char ch = nextChar();
 
-        switch(ch){
+        // The type of most tokens can be defined by the first character.
+        switch (ch) {
             case '(':
                 addToken(BRACKET_LEFT);
                 break;
@@ -83,24 +94,36 @@ public class Tokeniser
                 break;
 
             case '=':
-                if (matches('=')) { addToken(DOUBLE_EQUALS); }
-                else{ addToken(EQUALS); }
+                if (matches('=')) {
+                    addToken(DOUBLE_EQUALS);
+                } else {
+                    addToken(EQUALS);
+                }
                 break;
 
             case '<':
-                if(matches('=')) { addToken(LESS_THAN_EQ); }
-                else { addToken(LESS_THAN); }
+                if (matches('=')) {
+                    addToken(LESS_THAN_EQ);
+                } else {
+                    addToken(LESS_THAN);
+                }
                 break;
 
             case '>':
-                if(matches('=')) { addToken(GREATER_THAN_EQ); }
-                else { addToken(GREATER_THAN);}
+                if (matches('=')) {
+                    addToken(GREATER_THAN_EQ);
+                } else {
+                    addToken(GREATER_THAN);
+                }
                 break;
 
             case '!':
-                if(matches('=')) { addToken(NOT_EQUAL_TO); }
+                if (matches('=')) {
+                    addToken(NOT_EQUAL_TO);
+                }
                 break;
 
+            // This case recognises the opening quote of a string literal and scans the rest of the string.
             case '\'':
                 scanString();
                 break;
@@ -114,7 +137,7 @@ public class Tokeniser
                 break;
 
 
-            // Ignores whitespaces
+            // The following ignores whitespaces.
             case ' ':
             case '\r':
             case '\t':
@@ -122,43 +145,39 @@ public class Tokeniser
                 break;
 
 
-
             default:
-                if(isDigit(ch)){
+                if (isDigit(ch)) {
                     scanNumber();
-                }
-                else if(isLetter(ch)){
+                } else if (isLetter(ch)) {
                     scanWord();
-                }
-                else {
+                } else {
                     throw new UnexpectedCharacterException();
                 }
 
         }
     }
 
-
+    // Returns the current char and then advances the current position by one.
     private char nextChar() {
         current += 1;
         return source.charAt(current - 1);
     }
 
-    private void addToken(TokenType type){
-       String text = source.substring(start, current);
-       tokens.add(new Token(type, text));
+    // Adds a new `Token` composed of the supplied `TokenType` and the current substring to `tokens`.
+    private void addToken(TokenType type) {
+        String text = source.substring(start, current);
+        tokens.add(new Token(type, text));
     }
 
-
-    private boolean isAtEnd()
-    {
+    // Returns true if the source text has been completely consumed.
+    private boolean isAtEnd() {
         return current >= source.length();
     }
 
     // This method advances the input if the next char matches `nextChar`.
     // Returns true if the chars matched.
-    private boolean matches(char nextChar)
-    {
-        if(lookAhead() == nextChar){
+    private boolean matches(char nextChar) {
+        if (lookAhead() == nextChar) {
             nextChar();
             return true;
         }
@@ -166,50 +185,55 @@ public class Tokeniser
         return false;
     }
 
-    private char lookAhead(){
-        if (isAtEnd()){
+    // Equivalent to `nextChar` but does NOT advance the input.
+    private char lookAhead() {
+        if (isAtEnd()) {
             return '\0';
         }
         return source.charAt(current);
     }
 
-    private void scanNumber(){
+    // Consumes the input whilst there are ASCII digits with an optional decimal point.
+    // If there is a decimal point, a `FLOAT` token is added, otherwise an `INT` token is added.
+    private void scanNumber() {
 
-        while(isDigit(lookAhead())){
+        while (isDigit(lookAhead())) {
             nextChar();
         }
-        if(matches('.')){
-            while (isDigit(lookAhead())){
+        if (matches('.')) {
+            while (isDigit(lookAhead())) {
                 nextChar();
 
             }
             addToken(FLOAT);
-        }
-        else {
+        } else {
             addToken(INT);
         }
     }
 
+    // Consumes ASCII letters and digits followed by a single closing quote mark(').
+    // Adds a `STRING` token.
     private void scanString() throws UnexpectedCharacterException {
 
-        while(isLetterOrDigit(lookAhead())){
+        while (isLetterOrDigit(lookAhead())) {
             nextChar();
         }
-        if(matches('\'')){
+        if (matches('\'')) {
             addToken(STRING);
-        }
-        else{
+        } else {
             throw new UnexpectedCharacterException();
         }
     }
 
-    private void scanWord(){
+    // Consumes letters; if the word that it consumes is a keyword, that keyword is added to `tokens`.
+    // If the word is not a keyword, a variable token is added.
+    private void scanWord() {
 
-        while(isLetter(lookAhead())){
+        while (isLetter(lookAhead())) {
             nextChar();
         }
         String text = source.substring(start, current);
-        addToken(keywords.getOrDefault(text, VARIABLE));
+        addToken(keywords.getOrDefault(text.toUpperCase(), VARIABLE));
 
     }
 

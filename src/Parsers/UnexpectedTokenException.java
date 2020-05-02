@@ -1,6 +1,6 @@
 package Parsers;
 
-public class UnexpectedTokenException extends Throwable{
+public class UnexpectedTokenException extends Throwable {
 
     public final Token token;
 
