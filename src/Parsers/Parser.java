@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.jar.Attributes;
 
 
 import static Parsers.TokenType.*;
@@ -34,7 +35,8 @@ public class Parser
 
         List<ParserInterface<Command>> commandParsers = Arrays.asList(
                 this::parseUse,
-              //this::parseCreate,
+                this::parseCreateDatabase,
+                this::parseCreateTable,
                 this::parseDrop,
                 this::parseAlter,
                 this::parseInsert,
@@ -46,7 +48,9 @@ public class Parser
         for(ParserInterface<Command> commandParser: commandParsers){
 
             try {
-                return commandParser.parse();
+                Command command = commandParser.parse();
+                expect(SEMICOLON);
+                return command;
             }
             catch (UnexpectedTokenException e){
                 reset();
@@ -55,6 +59,33 @@ public class Parser
         }
         throw new UnexpectedTokenException(nextToken());
 
+    }
+
+    private CreateTable parseCreateTable() throws UnexpectedTokenException{
+
+        expect(CREATE);
+        expect(TABLE);
+        String tableName = parseVariable();
+
+        Optional <List<String>> attribList = Optional.empty();
+        if(matches(BRACKET_LEFT)){
+
+            attribList = Optional.of(parseListOf(this::parseVariable));
+            expect(BRACKET_RIGHT);
+
+        }
+
+        return new CreateTable(tableName, attribList);
+
+    }
+
+    private CreateDatabase parseCreateDatabase() throws UnexpectedTokenException{
+
+        expect(CREATE);
+        expect(DATABASE);
+        String databaseName = parseVariable();
+
+        return new CreateDatabase(databaseName);
     }
 
     private Use parseUse() throws UnexpectedTokenException{
@@ -310,8 +341,14 @@ public class Parser
     }
 
 
-    private Token nextToken(){
-        Token token = tokens.get(current);
+    private Token nextToken() throws UnexpectedTokenException {
+
+        Token token = lookAhead();
+
+        if(token == null){
+            throw new UnexpectedTokenException(null);
+        }
+
         current += 1;
         return token;
     }
@@ -324,7 +361,7 @@ public class Parser
         }
     }
 
-    private boolean matches(TokenType nextType){
+    private boolean matches(TokenType nextType) throws UnexpectedTokenException {
 
         Token lookAhead = lookAhead();
 

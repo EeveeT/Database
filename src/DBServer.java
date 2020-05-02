@@ -33,7 +33,7 @@ public class DBServer
                     processNextCommand(in, out);
                 }
             }
-            catch(Exception e){ System.err.println(e);}
+            catch(Exception e){e.printStackTrace();}
 
             out.close();
             in.close();
@@ -54,10 +54,10 @@ public class DBServer
             out.write("Input successfully parsed \n");
 
         } catch (UnexpectedCharacterException | UnexpectedTokenException ue) {
-            out.write("Unexpected Exception Error \n");
+            out.write("Error: Invalid Input");
 //todo: change this bit
             System.out.println(ue.toString());
-            out.write('\n');
+
         } finally {
             out.write("\n" + EOT + "\n");
             out.flush();

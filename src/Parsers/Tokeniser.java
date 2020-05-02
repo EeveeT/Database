@@ -88,7 +88,6 @@ public class Tokeniser
                 break;
 
             case '<':
-                // ask in forum about brackets for if statement below
                 if(matches('=')) { addToken(LESS_THAN_EQ); }
                 else { addToken(LESS_THAN); }
                 break;
@@ -108,6 +107,10 @@ public class Tokeniser
 
             case '*':
                 addToken(ASTERISK);
+                break;
+
+            case ';':
+                addToken(SEMICOLON);
                 break;
 
 
