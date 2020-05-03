@@ -1,6 +1,7 @@
 package Parsers;
 
 import Query.*;
+import Common.Value;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -387,3 +388,9 @@ public class Parser
     }
 
 }
+
+
+//todo: | County | Occupation | Gender | Age | Race  |
+//todo: | Devon  | Student    | Female | 24  | Mixed |
+//todo: | Wembley| Student    | tfemale| 21  | white |
+

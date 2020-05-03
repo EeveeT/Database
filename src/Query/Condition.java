@@ -1,5 +1,7 @@
 package Query;
 
+import Common.Value;
+
 public abstract class Condition {
 
     public enum Operator{ Equals, GT, LT ,GTE, LTE, NEquals, Like }

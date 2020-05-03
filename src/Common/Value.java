@@ -1,4 +1,4 @@
-package Query;
+package Common;
 
 public abstract class Value{
 
@@ -34,5 +34,9 @@ public abstract class Value{
         public Boolean(boolean bool) {
             this.bool = bool;
         }
+    }
+    static public class Nothing extends Value {
+
+        public Nothing() {}
     }
 }
