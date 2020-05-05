@@ -6,7 +6,7 @@ import java.util.Map;
 public class Database {
 
     public final String dbName;
-    public final Map<String, Table> tables;
+    private final Map<String, Table> tables;
 
     public Database(String dbName) {
         this.dbName = dbName;
@@ -25,9 +25,13 @@ public class Database {
 
     }
 
-    public Table getTable(String tableName){
+    public Table getTable(String tableName) throws TableNotFoundException {
 
-        return tables.get(tableName);
+        Table table = tables.get(tableName);
+        if(table == null){
+            throw new TableNotFoundException();
+        }
+        return table;
     }
 
 }

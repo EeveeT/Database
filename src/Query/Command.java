@@ -1,8 +1,10 @@
 package Query;
 
+import Database.Database;
+
 public interface Command {
 
- //todo: some ammendments
+ public String run(Database db);
 
 }
 
