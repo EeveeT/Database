@@ -36,4 +36,10 @@ public class Column{
             this.addElement(new Value.Nothing());
         }
     }
+
+    public Value getValue(int index){
+
+        return elements.get(index);
+
+    }
 }

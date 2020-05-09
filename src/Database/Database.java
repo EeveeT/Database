@@ -13,9 +13,9 @@ public class Database {
         this.tables = new HashMap<>();
     }
 
-    public void addTable(String tableName){
+    public Table addTable(String tableName){
 
-        tables.put(tableName, new Table());
+        return tables.put(tableName, new Table());
 
     }
 

@@ -3,8 +3,9 @@ package Database;
 import Common.Value;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Table {
     // Invariants: MUST ensure size of each column remain the same. A.K.A.,
@@ -66,5 +67,21 @@ public class Table {
            throw new MismatchedRowLengthException();
        }
     }
+
+    public Map<String, Value> getRow(int index){
+    // a row is an index into the columns
+
+        HashMap<String, Value> row = new HashMap<>();
+
+        for(int column = 0; column < getNumCol(); column++){
+
+            Value element = columns.get(column).getValue(index);
+            String colName = columnNames.get(column);
+
+            row.put(colName, element);
+        }
+        return row;
+    }
+
 
 }
