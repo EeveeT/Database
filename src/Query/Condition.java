@@ -50,11 +50,12 @@ public abstract class Condition {
                 case NEquals:
                     return !element.equalTo(value);
 
-                //todo:case Like:
-                //    return element.like(value);
+                // Compiler did not recognise this switch is exhaustive so had to
+                // set a default.
+                default: //Like
+                    return element.like(value);
 
             }
-
         }
     }
 
@@ -71,7 +72,7 @@ public abstract class Condition {
         }
 
         @Override
-        public boolean evaluateCondition(Map<String, Value> row) {
+        public boolean evaluateCondition(Map<String, Value> row) throws IncorrectTypeException {
 
             if (junction == Junction.AND) {
                 return left.evaluateCondition(row) && right.evaluateCondition(row);

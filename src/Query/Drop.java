@@ -1,5 +1,7 @@
 package Query;
 
+import Database.Database;
+
 public class Drop implements Command{
 
     public Structure structure;
@@ -8,6 +10,12 @@ public class Drop implements Command{
     public Drop(Structure structure, String structName) {
         this.structure = structure;
         this.structName = structName;
+    }
+
+    @Override
+    public String run(Database db) {
+        return "Error";
+
     }
 
     public enum Structure{ DATABASE, TABLE}

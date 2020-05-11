@@ -60,7 +60,6 @@ public abstract class Value{
         }
 
     }
-
     static public class Float extends Value {
 
         private final float aFloat;
@@ -69,20 +68,34 @@ public abstract class Value{
             this.aFloat = aFloat;
         }
 
-        @Override
-        public boolean greaterThan(Value value) throws IncorrectTypeException {
-            return false;
-        }
-
-        @Override
-        public boolean lessThan(Value value) throws IncorrectTypeException {
-            return false;
+        private float toFloat(){
+            return aFloat;
         }
 
         @Override
         public boolean equalTo(Value value) throws IncorrectTypeException {
-            return false;
+            if(value instanceof Float){
+                return ((Float) value).toFloat() == aFloat ;
+            }
+            throw new IncorrectTypeException();
         }
+
+        @Override
+        public boolean greaterThan(Value value) throws IncorrectTypeException {
+            if(value instanceof Float){
+                return ((Float) value).toFloat() > aFloat ;
+            }
+            throw new IncorrectTypeException();
+        }
+
+        @Override
+        public boolean lessThan(Value value) throws IncorrectTypeException {
+            if(value instanceof Float){
+                return ((Float) value).toFloat() < aFloat ;
+            }
+            throw new IncorrectTypeException();
+        }
+
     }
     //Text is the StringLiteral renamed to Text so to not confuse Value.string and java.lang.string
     static public class Text extends Value {
@@ -115,7 +128,12 @@ public abstract class Value{
         @Override
         public boolean like(Value value) throws IncorrectTypeException {
 
-            return super.like(value);
+           if(value instanceof Text){
+
+               return string.contains(value.toString());
+           }
+
+           throw new IncorrectTypeException();
         }
 
         @Override
@@ -123,6 +141,7 @@ public abstract class Value{
 
             return string;
         }
+
     }
     static public class Boolean extends Value {
         private final boolean bool;
@@ -130,10 +149,44 @@ public abstract class Value{
         public Boolean(boolean bool) {
             this.bool = bool;
         }
+
+        @Override
+        public boolean greaterThan(Value value) throws IncorrectTypeException {
+            throw new IncorrectTypeException();
+        }
+
+        @Override
+        public boolean lessThan(Value value) throws IncorrectTypeException {
+            throw new IncorrectTypeException();
+        }
+
+        @Override
+        public boolean equalTo(Value value) throws IncorrectTypeException {
+
+            if(value instanceof Boolean){
+                return ((Boolean) value).bool == bool;
+            }
+            throw new IncorrectTypeException();
+        }
     }
     static public class Nothing extends Value {
 
         public Nothing() {}
+
+        @Override
+        public boolean greaterThan(Value value) throws IncorrectTypeException {
+            throw new IncorrectTypeException();
+        }
+
+        @Override
+        public boolean lessThan(Value value) throws IncorrectTypeException {
+            throw new IncorrectTypeException();
+        }
+
+        @Override
+        public boolean equalTo(Value value) throws IncorrectTypeException {
+            throw new IncorrectTypeException();
+        }
     }
 
 

@@ -1,5 +1,7 @@
 package Query;
 
+import Database.Database;
+
 public class CreateDatabase implements Command {
 
 
@@ -9,5 +11,9 @@ public class CreateDatabase implements Command {
         this.databaseName = databaseName;
     }
 
+    @Override
+    public String run(Database db) {
+        return "Error";
+    }
 }
 

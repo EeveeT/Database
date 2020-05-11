@@ -2,10 +2,7 @@ package Database;
 
 import Common.Value;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Table {
     // Invariants: MUST ensure size of each column remain the same. A.K.A.,
@@ -39,7 +36,7 @@ public class Table {
         columnNames.add(columnName);
     }
 
-    private int getNumRows() throws NoColumnsException {
+    public int getNumRows() throws NoColumnsException {
 
         for (Column column: columns){
             return column.getNumElements();
@@ -81,6 +78,12 @@ public class Table {
             row.put(colName, element);
         }
         return row;
+    }
+
+    public List<String> getColumnNames(){
+
+        return Collections.unmodifiableList(columnNames);
+
     }
 
 

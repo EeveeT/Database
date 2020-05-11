@@ -1,10 +1,12 @@
 package Query;
 
-import Database.Database;
-import Database.TableNotFoundException;
-import Database.Table;
+import Common.IncorrectTypeException;
+import Common.Value;
+import Database.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 public class Select implements Command {
@@ -29,8 +31,44 @@ public class Select implements Command {
             return "Error: Table Not Found";
         }
 
+        // Will only run table::getColumnNames when it needs to.
+        List<String> columnNames = attribList.orElseGet(table::getColumnNames);
 
+        int numRows = 0;
 
+        try {
+            numRows = table.getNumRows();
+        }
+        catch (NoColumnsException ignored) {}
+
+        StringBuilder tableOutput = new StringBuilder();
+
+        for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
+
+            Map<String, Value> row = table.getRow(rowIndex);
+
+            boolean condTrue;
+            try {
+                condTrue = condition.orElseThrow().evaluateCondition(row);
+            }
+            catch (IncorrectTypeException e) {
+                return "Error: Incorrect type";
+
+            }
+            catch (NoSuchElementException e){
+
+                condTrue = true;
+            }
+            if(condTrue){
+
+                for (String columnName: columnNames) {
+                    tableOutput.append(row.get(columnName));
+                }
+                tableOutput.append("\n");
+
+            }
+        }
+        return tableOutput.toString();
     }
 }
 

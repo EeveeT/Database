@@ -51,10 +51,18 @@ public class DBServer
             List<Token> tokens = new Tokeniser(line).tokenise();
             System.out.println(tokens);
             Command command = new Parser(tokens).parseCommand();
-            out.write("Input successfully parsed \n");
+            try{
+                out.write(command.run(null));
+            }
+            catch (NullPointerException e) {
+                out.write("Error");
+            }
+
+            //out.write("Input successfully parsed \n");
 
         } catch (UnexpectedCharacterException | UnexpectedTokenException ue) {
-            out.write("Error: Invalid Input");
+            ue.printStackTrace();
+           // out.write("Error: Invalid Input");
 //todo: change this bit
             System.out.println(ue.toString());
 

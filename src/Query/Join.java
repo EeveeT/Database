@@ -1,5 +1,7 @@
 package Query;
 
+import Database.Database;
+
 public class Join implements Command {
     public String tableNameA;
     public String tableNameB;
@@ -13,4 +15,9 @@ public class Join implements Command {
         this.attribNameB = attribNameB;
     }
 
+    @Override
+    public String run(Database db) {
+        return "Error";
+
+    }
 }

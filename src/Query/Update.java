@@ -2,6 +2,7 @@ package Query;
 
 import java.util.List;
 import Common.Value;
+import Database.Database;
 
 public class Update implements Command {
 
@@ -13,6 +14,12 @@ public class Update implements Command {
         this.tableName = tableName;
         this.nameValue = nameValue;
         this.condition = condition;
+    }
+
+    @Override
+    public String run(Database db) {
+        return "Error";
+
     }
 
     static public class NameValue {

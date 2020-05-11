@@ -1,5 +1,7 @@
 package Query;
 
+import Database.Database;
+
 import java.util.Optional;
 
 public class Alter implements Command {
@@ -12,6 +14,12 @@ public class Alter implements Command {
         this.tableName = tableName;
         this.altType = altType;
         this.attribName = attribName;
+    }
+
+    @Override
+    public String run(Database db) {
+        return "Error";
+
     }
 
 
