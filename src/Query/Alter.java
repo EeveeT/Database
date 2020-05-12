@@ -22,7 +22,6 @@ public class Alter implements Command {
 
     }
 
-
     public enum Action{ ADD, DROP}
 
 }

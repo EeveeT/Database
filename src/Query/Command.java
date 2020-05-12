@@ -1,10 +1,11 @@
 package Query;
 
-import Database.Database;
+
+import Database.Environment;
 
 public interface Command {
 
- public String run(Database db);
+ String run(Environment env);
 
 
 }

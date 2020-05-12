@@ -12,16 +12,21 @@ public class Insert implements Command {
         this.tableName = tableName;
         this.valueList = valueList;
     }
-    //todo: tripletriple check run JUST incase :(
-    public String run(Database db) {
+
+    public String run(Environment env) {
+
+        Database db;
 
         try {
+            db = env.getDatabase();
             Table table = db.getTable(tableName);
             table.addRow(valueList);
 
             return "OK";
         }
-        catch(MismatchedRowLengthException | TableNotFoundException e){
+        catch(MismatchedRowLengthException
+             | TableNotFoundException
+             | DatabaseNotFoundException e){
             return "Error";
         }
     }

@@ -210,7 +210,8 @@ public class Parser
             attribList = Optional.of(parseListOf(this::parseVariable));
 
         }
-        expect(FROM);
+
+
         String tableName = parseVariable();
         Optional<Condition> condition = Optional.empty();
         if(matches(WHERE)){

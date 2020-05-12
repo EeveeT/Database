@@ -1,6 +1,10 @@
 package Query;
 
 import Database.Database;
+import Database.Environment;
+
+
+import java.io.*;
 
 public class Use implements Command{
     String databaseName;
@@ -10,9 +14,22 @@ public class Use implements Command{
     }
 
     @Override
-    public String run(Database db) {
-        return "Error";
+    public String run(Environment env) {
 
+        try {
+            FileInputStream fis = new FileInputStream(String.format("%s.db", databaseName));
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Object obj = ois.readObject();
+            if(obj instanceof Database){
+
+                env.putDatabase((Database)obj);
+                return "OK";
+            }
+            return "ERROR";
+        }
+        catch (IOException | ClassNotFoundException e){
+            return "ERROR";
+        }
     }
 }
 

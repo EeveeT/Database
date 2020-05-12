@@ -21,13 +21,19 @@ public class Select implements Command {
     }
 
     @Override
-    public String run(Database db) {
+    public String run(Environment env) {
 
+        Database db;
         Table table;
 
         try{
+            db = env.getDatabase();
             table = db.getTable(tableName);
-        } catch (TableNotFoundException e) {
+        }
+        catch (DatabaseNotFoundException e){
+            return "ERROR: Database Not Found";
+        }
+        catch (TableNotFoundException e) {
             return "Error: Table Not Found";
         }
 
