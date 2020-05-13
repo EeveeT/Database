@@ -9,4 +9,9 @@ public class Token
         this.type = type;
         this.string = string;
     }
+
+    @Override
+    public String toString() {
+        return String.format("%s[%s]", string, type);
+    }
 }

@@ -1,6 +1,6 @@
 package Query;
 
-import Database.Database;
+import Database.*;
 
 public class Delete implements Command {
     public String tableName;
@@ -12,7 +12,7 @@ public class Delete implements Command {
     }
 
     @Override
-    public String run(Database db) {
+    public String run(Environment env) {
         return "Error";
     }
 }

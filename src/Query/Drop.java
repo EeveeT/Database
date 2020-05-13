@@ -1,6 +1,6 @@
 package Query;
 
-import Database.Database;
+import Database.*;
 
 public class Drop implements Command{
 
@@ -13,7 +13,7 @@ public class Drop implements Command{
     }
 
     @Override
-    public String run(Database db) {
+    public String run(Environment env) {
         return "Error";
 
     }

@@ -1,11 +1,12 @@
 package Database;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Database {
+public class Database implements Serializable {
 
-    public final String dbName;
+    private final String dbName;
     private final Map<String, Table> tables;
 
     public Database(String dbName) {
@@ -14,8 +15,9 @@ public class Database {
     }
 
     public Table addTable(String tableName){
-
-        return tables.put(tableName, new Table());
+        Table table = new Table();
+        tables.put(tableName, table);
+        return table;
 
     }
 
@@ -29,9 +31,14 @@ public class Database {
 
         Table table = tables.get(tableName);
         if(table == null){
-            throw new TableNotFoundException();
+            throw new TableNotFoundException(tableName, tables.keySet());
         }
         return table;
+    }
+
+    public String getName(){
+
+        return dbName;
     }
 
 }

@@ -1,6 +1,5 @@
 package Query;
 
-
 import Database.Environment;
 
 public interface Command {

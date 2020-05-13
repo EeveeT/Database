@@ -1,6 +1,6 @@
 package Query;
 
-import Database.Database;
+import Database.*;
 
 import java.util.Optional;
 
@@ -17,7 +17,7 @@ public class Alter implements Command {
     }
 
     @Override
-    public String run(Database db) {
+    public String run(Environment env) {
         return "Error";
 
     }

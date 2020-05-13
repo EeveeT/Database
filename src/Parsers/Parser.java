@@ -1,5 +1,8 @@
 package Parsers;
 
+import Common.Boolean;
+import Common.Float;
+import Common.Text;
 import Query.*;
 import Common.Value;
 
@@ -204,18 +207,22 @@ public class Parser
         expect(SELECT);
         Optional<List<String>> attribList;
         if(matches(ASTERISK)){
+            System.out.println("Asterisk found!");
             attribList = Optional.empty();
         }
         else{
+            System.out.println("Looking for column name list..");
             attribList = Optional.of(parseListOf(this::parseVariable));
-
+            System.out.println("Found them!");
         }
 
-
+        expect(FROM);
         String tableName = parseVariable();
         Optional<Condition> condition = Optional.empty();
         if(matches(WHERE)){
+            System.out.println("Ooh! A where clause!");
             condition = Optional.of(parseCondition());
+            System.out.println("And that's done too!");
         }
 
         return new Select(attribList, tableName, condition );
@@ -307,19 +314,20 @@ public class Parser
 
         switch(token.type){
             case STRING:
-                return new Value.Text(token.string);
+                String contents = token.string.substring(1, token.string.length()-1);
+                return new Text(contents);
 
             case TRUE:
-                return new Value.Boolean(true);
+                return new Boolean(true);
 
             case FALSE:
-                return new Value.Boolean(false);
+                return new Boolean(false);
 
             case INT:
-                return new Value.Integer(parseInt(token.string));
+                return new Common.Integer(parseInt(token.string));
 
             case FLOAT:
-                return new Value.Float(parseFloat(token.string));
+                return new Float(parseFloat(token.string));
 
             default:
                 throw new UnexpectedTokenException(token);
@@ -391,7 +399,4 @@ public class Parser
 }
 
 
-//todo: | County | Occupation | Gender | Age | Race  |
-//todo: | Devon  | Student    | Female | 24  | Mixed |
-//todo: | Wembley| Student    | tfemale| 21  | white |
 

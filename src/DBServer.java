@@ -1,3 +1,4 @@
+import Database.Environment;
 import Parsers.*;
 import Query.Command;
 
@@ -9,8 +10,11 @@ import java.util.List;
 public class DBServer
 {
     final static char EOT = 4;
+    private final Environment environment;
 
     public DBServer(int portNumber){
+
+        environment = new Environment();
 
         try{
             ServerSocket ss = new ServerSocket(portNumber);
@@ -51,12 +55,8 @@ public class DBServer
             List<Token> tokens = new Tokeniser(line).tokenise();
             System.out.println(tokens);
             Command command = new Parser(tokens).parseCommand();
-            try{
-                out.write(command.run(null));
-            }
-            catch (NullPointerException e) {
-                out.write("Error");
-            }
+
+            out.write(command.run(environment));
 
             //out.write("Input successfully parsed \n");
 

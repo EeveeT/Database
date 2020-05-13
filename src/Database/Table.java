@@ -2,9 +2,10 @@ package Database;
 
 import Common.Value;
 
+import java.io.Serializable;
 import java.util.*;
 
-public class Table {
+public class Table implements Serializable {
     // Invariants: MUST ensure size of each column remain the same. A.K.A.,
     // if you add an element to one column, you MUST
     // also add elements in the rest of the columns (to fill the entire 'row').
@@ -83,6 +84,18 @@ public class Table {
     public List<String> getColumnNames(){
 
         return Collections.unmodifiableList(columnNames);
+
+    }
+
+    public void updateRow(int rowIndex, Map<String, Value> row){
+
+        for(int columnIndex = 0; columnIndex < getNumCol(); columnIndex++){
+
+            String colName = getColumnNames().get(columnIndex);
+            Value element = row.get(colName);
+            Column column = columns.get(columnIndex);
+            column.setValue(columnIndex, element);
+        }
 
     }
 

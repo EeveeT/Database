@@ -1,7 +1,6 @@
 package Query;
 
-import Database.Database;
-import Database.Table;
+import Database.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,12 +16,23 @@ public class CreateTable implements Command{
     }
 
     @Override
-    public String run(Database db) {
+    public String run(Environment env) {
+
+
+        Database db;
+
+        try{
+            db = env.getDatabase();
+        }
+        catch (DatabaseNotFoundException e){
+            return "ERROR: Database Not Found";
+        }
 
         Table table = db.addTable(tableName);
+
         if(columnNameList.isPresent()){
-            for (String colNam: columnNameList.get()) {
-                table.addColumn(colNam);
+            for (String colName: columnNameList.get()) {
+                table.addColumn(colName);
             }
         }
         return "OK";

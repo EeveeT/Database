@@ -1,6 +1,6 @@
 package Query;
 
-import Database.Database;
+import Database.*;
 
 public class Join implements Command {
     public String tableNameA;
@@ -16,7 +16,7 @@ public class Join implements Command {
     }
 
     @Override
-    public String run(Database db) {
+    public String run(Environment env) {
         return "Error";
 
     }

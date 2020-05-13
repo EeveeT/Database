@@ -1,10 +1,6 @@
 package Query;
 
-import Database.Database;
-import Database.Environment;
-
-
-import java.io.*;
+import Database.*;
 
 public class Use implements Command{
     String databaseName;
@@ -17,18 +13,11 @@ public class Use implements Command{
     public String run(Environment env) {
 
         try {
-            FileInputStream fis = new FileInputStream(String.format("%s.db", databaseName));
-            ObjectInputStream ois = new ObjectInputStream(fis);
-            Object obj = ois.readObject();
-            if(obj instanceof Database){
-
-                env.putDatabase((Database)obj);
-                return "OK";
-            }
-            return "ERROR";
+            env.loadDatabase(databaseName);
+            return "OK";
         }
-        catch (IOException | ClassNotFoundException e){
-            return "ERROR";
+        catch (DatabaseNotFoundException e){
+            return "ERROR: Database Not Found";
         }
     }
 }

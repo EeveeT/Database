@@ -1,8 +1,12 @@
 package Query;
 
 import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+
+import Common.IncorrectTypeException;
 import Common.Value;
-import Database.Database;
+import Database.*;
 
 public class Update implements Command {
 
@@ -17,15 +21,44 @@ public class Update implements Command {
     }
 
     @Override
-    public String run(Database db) {
-        return "Error";
+    public String run(Environment env) {
 
+        Table table;
+
+        try {
+            table = env.getDatabase().getTable(tableName);
+        }
+        catch (DatabaseNotFoundException e ){
+            return "ERROR: Database Not Loaded";
+        }
+        catch (TableNotFoundException e){
+            return "ERROR: Table Not Found";
+        }
+
+        int numRows = 0;
+        try{
+            numRows = table.getNumRows();
+        } catch (NoColumnsException ignored) {}
+
+        for(int rowIndex = 0; rowIndex < numRows; rowIndex++) {
+
+            Map<String, Value> row = table.getRow(rowIndex);
+            try{
+                if(condition.evaluateCondition(row)){
+                    table.updateRow(rowIndex, row);
+                }
+            }
+            catch (IncorrectTypeException e){
+                return "ERROR";
+            }
+        }
+        return "OK";
     }
 
     static public class NameValue {
 
-        public String name;
-        public Value value;
+        public final String name;
+        public final Value value;
 
         public NameValue(String name, Value value) {
             this.name = name;

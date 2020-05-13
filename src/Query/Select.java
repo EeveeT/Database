@@ -48,6 +48,14 @@ public class Select implements Command {
         catch (NoColumnsException ignored) {}
 
         StringBuilder tableOutput = new StringBuilder();
+//todo: try to find a way to sort this out
+        tableOutput.append("id      ");
+        for(String columnName : columnNames){
+            tableOutput.append(String.format("%-8s", columnName));
+
+        }
+        tableOutput.append("\n");
+
 
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
 
@@ -66,9 +74,10 @@ public class Select implements Command {
                 condTrue = true;
             }
             if(condTrue){
+                tableOutput.append(String.format("%-8s", rowIndex));
 
                 for (String columnName: columnNames) {
-                    tableOutput.append(row.get(columnName));
+                    tableOutput.append(String.format("%-8s", row.get(columnName)));
                 }
                 tableOutput.append("\n");
 
