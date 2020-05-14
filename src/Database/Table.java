@@ -94,10 +94,17 @@ public class Table implements Serializable {
             String colName = getColumnNames().get(columnIndex);
             Value element = row.get(colName);
             Column column = columns.get(columnIndex);
-            column.setValue(columnIndex, element);
+            column.setValue(rowIndex, element);
         }
 
     }
 
+    public void removeRow(int rowIndex) {
+
+        for (Column column: columns) {
+
+            column.removeElement(rowIndex);
+        }
+    }
 
 }

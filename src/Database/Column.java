@@ -20,9 +20,10 @@ public class Column implements Serializable {
         elements.add(element);
     }
 
-    private void removeElement(Value element){
+    public void removeElement(int elementIndex){
 
-        //todo: tricky - iterator and validation
+        elements.remove(elementIndex);
+
     }
 
     public int getNumElements(){

@@ -19,5 +19,10 @@ public class Join implements Command {
     public String run(Environment env) {
         return "Error";
 
+        // JOIN tableA AND tableB ON colX AND colY;
+
+        // SELECT * FROM tableA
+        // JOIN tableB ON tableA.colX = tableB.colY;
+
     }
 }
