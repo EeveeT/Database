@@ -1,6 +1,8 @@
 package Database;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class Environment {
 
@@ -60,6 +62,13 @@ public class Environment {
 
         db = null;
 
+    }
+
+    public void deleteDatabase() throws IOException {
+
+        Path fileName = Path.of(db.getName(), ".db");
+
+        Files.delete(fileName);
     }
 
 }
