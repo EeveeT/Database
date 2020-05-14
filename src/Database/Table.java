@@ -31,7 +31,7 @@ public class Table implements Serializable {
 
         }
         catch (NoColumnsException e){
-            // Don't want to do anything if there are no columns
+            // Don't want to do anything if there are no columns.
         }
         columns.add(column);
         columnNames.add(columnName);
@@ -67,7 +67,7 @@ public class Table implements Serializable {
     }
 
     public Map<String, Value> getRow(int index){
-    // a row is an index into the columns
+    // A row is an index into the columns.
 
         HashMap<String, Value> row = new HashMap<>();
 

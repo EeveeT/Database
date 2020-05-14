@@ -43,13 +43,19 @@ public class Delete implements Command {
             try{
                 if(condition.evaluateCondition(row)){
                     table.removeRow(rowIndex);
+                    // Need to account for table decreasing by the deleted row.
+                    numRows--;
+                    // Cannot remain at the index at which row was just removed so need to
+                    // "go back" to where we just were pre-deletion thus avoiding out of
+                    // bounds exception.
+                    rowIndex--;
                 }
             } catch (IncorrectTypeException e) {
                 return "ERROR: Mismatched Types";
             }
         }
-
         return "OK";
     }
 
 }
+
