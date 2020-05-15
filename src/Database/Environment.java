@@ -57,7 +57,8 @@ public class Environment {
         fos.close();
 
     }
-    // Removes from environment but doesn't delete file. To get the database user must USE the database.
+    // Removes from environment but doesn't delete file.
+    // To get the database user must USE the database.
     public void removeDatabase(){
 
         db = null;

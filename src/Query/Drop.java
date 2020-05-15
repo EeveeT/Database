@@ -37,10 +37,19 @@ public class Drop implements Command{
         return "OK";
     }
 
-    private void dropDatabase(Environment env) throws IOException {
+    private void dropDatabase(Environment env) throws DatabaseNotFoundException, IOException {
 
-        env.deleteDatabase();
-        env.removeDatabase();
+        Database db;
+
+        db = env.getDatabase();
+        String currentDbName = db.getName();
+        if(currentDbName.equals(structName)){
+            env.deleteDatabase();
+            env.removeDatabase();
+        }
+        else {
+            throw new DatabaseNotFoundException();
+        }
 
     }
 

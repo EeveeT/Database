@@ -1,13 +1,11 @@
 package Query;
 
 import Common.IncorrectTypeException;
+import Common.TableFormatter;
 import Common.Value;
 import Database.*;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 public class Select implements Command {
     public Optional<List<String>> attribList;
@@ -26,14 +24,12 @@ public class Select implements Command {
         Database db;
         Table table;
 
-        try{
+        try {
             db = env.getDatabase();
             table = db.getTable(tableName);
-        }
-        catch (DatabaseNotFoundException e){
+        } catch (DatabaseNotFoundException e) {
             return "ERROR: Database Not Found";
-        }
-        catch (TableNotFoundException e) {
+        } catch (TableNotFoundException e) {
             return "Error: Table Not Found";
         }
 
@@ -44,18 +40,18 @@ public class Select implements Command {
 
         try {
             numRows = table.getNumRows();
+        } catch (NoColumnsException ignored) {}
+        // '+ 1' to account for id.
+        TableFormatter tableFormatter = new TableFormatter(columnNames.size() + 1);
+
+        try {
+            List<String> header = new ArrayList<>(List.copyOf(columnNames));
+            header.add(0, "id");
+            tableFormatter.addRow(header);
+        } catch (MismatchedRowLengthException e) {
+            System.err.println("Mismatched Row Length Error");
+            return "ERROR: Server Crashed";
         }
-        catch (NoColumnsException ignored) {}
-
-        StringBuilder tableOutput = new StringBuilder();
-//todo: try to find a way to sort this out
-        tableOutput.append("id      ");
-        for(String columnName : columnNames){
-            tableOutput.append(String.format("%-8s", columnName));
-
-        }
-        tableOutput.append("\n");
-
 
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
 
@@ -64,26 +60,30 @@ public class Select implements Command {
             boolean condTrue;
             try {
                 condTrue = condition.orElseThrow().evaluateCondition(row);
-            }
-            catch (IncorrectTypeException e) {
-                return "Error: Incorrect type";
+            } catch (IncorrectTypeException e) {
+                return "ERROR: Incorrect type";
 
-            }
-            catch (NoSuchElementException e){
+            } catch (NoSuchElementException e) {
 
                 condTrue = true;
             }
-            if(condTrue){
-                tableOutput.append(String.format("%-8s", rowIndex));
+            if (condTrue) {
+                List<String> printedRow = new ArrayList<>();
 
-                for (String columnName: columnNames) {
-                    tableOutput.append(String.format("%-8s", row.get(columnName)));
+                printedRow.add(Integer.toString(rowIndex));
+
+                for (String columnName : columnNames) {
+                    printedRow.add(row.get(columnName).toString());
                 }
-                tableOutput.append("\n");
-
+                try {
+                    tableFormatter.addRow(printedRow);
+                }
+                catch (MismatchedRowLengthException e){
+                    return "ERROR: Server Crashed";
+                }
             }
         }
-        return tableOutput.toString();
+        return tableFormatter.toString();
     }
 }
 

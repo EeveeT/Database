@@ -42,7 +42,7 @@ public class Tokeniser {
         keywords.put("ON", ON);
         keywords.put("TRUE", TRUE);
         keywords.put("FALSE", FALSE);
-        keywords.put("AND ", AND);
+        keywords.put("AND", AND);
         keywords.put("OR", OR);
         keywords.put("LIKE", LIKE);
 

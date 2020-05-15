@@ -45,7 +45,7 @@ public class Table implements Serializable {
         throw new NoColumnsException();
     }
 
-    private int getNumCol(){
+    public int getNumCol(){
 
         return columns.size();
     }
