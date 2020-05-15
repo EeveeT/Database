@@ -1,8 +1,10 @@
 package Query;
 
-import java.util.List;
 import Common.Value;
 import Database.*;
+
+import java.io.IOException;
+import java.util.List;
 
 public class Insert implements Command {
     public String tableName;
@@ -21,13 +23,17 @@ public class Insert implements Command {
             db = env.getDatabase();
             Table table = db.getTable(tableName);
             table.addRow(valueList);
-
-            return "OK";
-        }
-        catch(MismatchedRowLengthException
-             | TableNotFoundException
-             | DatabaseNotFoundException e){
+        } catch (MismatchedRowLengthException
+                | TableNotFoundException
+                | DatabaseNotFoundException e) {
             return "Error";
         }
+
+        try {
+            env.saveDatabase();
+        } catch (IOException | DatabaseNotFoundException ignored) {
+        }
+
+        return "OK";
     }
 }

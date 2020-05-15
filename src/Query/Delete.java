@@ -4,6 +4,7 @@ import Common.IncorrectTypeException;
 import Common.Value;
 import Database.*;
 
+import java.io.IOException;
 import java.util.Map;
 
 public class Delete implements Command {
@@ -54,6 +55,11 @@ public class Delete implements Command {
                 return "ERROR: Mismatched Types";
             }
         }
+        try {
+            env.saveDatabase();
+        } catch (IOException | DatabaseNotFoundException ignored) {
+        }
+
         return "OK";
     }
 

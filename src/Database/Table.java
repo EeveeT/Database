@@ -11,7 +11,7 @@ public class Table implements Serializable {
     // also add elements in the rest of the columns (to fill the entire 'row').
 
     private final ArrayList<String> columnNames;
-    private final ArrayList<Column>  columns;
+    private final ArrayList<Column> columns;
 
     public Table() {
         this.columns = new ArrayList<>();
@@ -29,23 +29,30 @@ public class Table implements Serializable {
             int numRows = getNumRows();
             column.extendColumnBy(numRows);
 
-        }
-        catch (NoColumnsException e){
+        } catch (NoColumnsException e) {
             // Don't want to do anything if there are no columns.
         }
         columns.add(column);
         columnNames.add(columnName);
     }
 
+    public void removeColumn(String columnName) {
+
+        int index = columnNames.indexOf(columnName);
+        columnNames.remove(index);
+        columns.remove(index);
+
+    }
+
     public int getNumRows() throws NoColumnsException {
 
-        for (Column column: columns){
+        for (Column column : columns) {
             return column.getNumElements();
         }
         throw new NoColumnsException();
     }
 
-    public int getNumCol(){
+    public int getNumCol() {
 
         return columns.size();
     }

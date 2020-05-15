@@ -1,6 +1,8 @@
 package Query;
 
-import Database.*;
+import Database.Database;
+import Database.DatabaseNotFoundException;
+import Database.Environment;
 
 import java.io.IOException;
 
@@ -22,16 +24,17 @@ public class Drop implements Command{
         try{
             if(structure == Structure.DATABASE){
                 dropDatabase(env);
-            }
-            else{
+            } else {
                 dropTable(env);
             }
-        }
-        catch (IOException e){
+        } catch (IOException e) {
             return "ERROR: File Not Found";
-        }
-        catch (DatabaseNotFoundException e){
+        } catch (DatabaseNotFoundException e) {
             return "ERROR: Database Not Found";
+        }
+        try {
+            env.saveDatabase();
+        } catch (IOException | DatabaseNotFoundException ignored) {
         }
 
         return "OK";

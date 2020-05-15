@@ -1,12 +1,12 @@
 package Query;
 
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-
 import Common.IncorrectTypeException;
 import Common.Value;
 import Database.*;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 public class Update implements Command {
 
@@ -43,15 +43,19 @@ public class Update implements Command {
         for(int rowIndex = 0; rowIndex < numRows; rowIndex++) {
 
             Map<String, Value> row = table.getRow(rowIndex);
-            try{
-                if(condition.evaluateCondition(row)){
+            try {
+                if (condition.evaluateCondition(row)) {
                     table.updateRow(rowIndex, row);
                 }
-            }
-            catch (IncorrectTypeException e){
+            } catch (IncorrectTypeException e) {
                 return "ERROR";
             }
         }
+        try {
+            env.saveDatabase();
+        } catch (IOException | DatabaseNotFoundException ignored) {
+        }
+
         return "OK";
     }
 
